@@ -1,0 +1,85 @@
+@import "tailwindcss";
+
+@theme {
+  --color-background: #0a0a0c;
+  --color-surface: #111114;
+  --color-primary: #00f2fe;
+  --color-secondary: #7000ff;
+  --color-accent: #00d1ff;
+  --color-text-primary: #ffffff;
+  --color-text-secondary: #a1a1aa;
+
+  --font-sans: "Inter", "system-ui", "sans-serif";
+
+  --shadow-neon-primary: 0 0 10px rgba(0, 242, 254, 0.5), 0 0 20px rgba(0, 242, 254, 0.2);
+  --shadow-neon-secondary: 0 0 10px rgba(112, 0, 255, 0.5), 0 0 20px rgba(112, 0, 255, 0.2);
+  --shadow-glass-hover: 0 0 30px rgba(0, 242, 254, 0.05);
+  --shadow-neon-glow: 0 0 15px rgba(0, 242, 254, 0.3);
+
+  --animate-fade-in: fadeIn 0.5s ease-out forwards;
+  --animate-slide-up: slideUp 0.5s ease-out forwards;
+
+  @keyframes fadeIn {
+    0% {
+      opacity: 0;
+    }
+
+    100% {
+      opacity: 1;
+    }
+  }
+
+  @keyframes slideUp {
+    0% {
+      transform: translateY(20px);
+      opacity: 0;
+    }
+
+    100% {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+}
+
+@layer base {
+  body {
+    @apply bg-background text-text-primary font-sans antialiased;
+    scroll-behavior: smooth;
+  }
+}
+
+@layer components {
+  .glass-card {
+    @apply bg-surface/40 backdrop-blur-xl border border-white/5 rounded-2xl transition-all duration-500;
+  }
+
+  .glass-card:hover {
+    @apply border-primary/20 shadow-glass-hover;
+  }
+
+  .btn-primary {
+    @apply bg-gradient-to-r from-primary to-secondary px-8 py-3 rounded-full font-bold text-white transition-all duration-300 hover:shadow-neon-primary hover:scale-105 active:scale-95 flex items-center justify-center gap-2;
+  }
+
+  .neon-glow {
+    @apply shadow-neon-glow;
+  }
+
+  .nav-link {
+    @apply text-text-secondary hover:text-primary transition-colors duration-200 cursor-pointer;
+  }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-background;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-zinc-800 rounded-full hover:bg-zinc-700;
+}
