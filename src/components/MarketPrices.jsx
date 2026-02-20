@@ -212,9 +212,10 @@ const MarketPrices = () => {
                 curr.map(coin => {
                     const isUp = Math.random() > 0.4;
                     const changePct = (Math.random() * 2).toFixed(2);
-                    const currentPrice = parseFloat(coin.price.replace(/,/g, ''));
+                    const rawPrice = coin.price.replace(/,/g, '');
+                    const currentPrice = parseFloat(rawPrice);
                     const delta = currentPrice * (parseFloat(changePct) / 100) * (isUp ? 1 : -1);
-                    const decimals = coin.price.includes('.') ? coin.price.split('.')[1].length : 2;
+                    const decimals = Math.min(Math.max(rawPrice.includes('.') ? rawPrice.split('.')[1].length : 2, 0), 20);
                     const newPrice = (currentPrice + delta).toFixed(decimals);
                     const newData = [...coin.data.slice(1), coin.data[coin.data.length - 1] + (isUp ? 1 : -1) * Math.random() * 5];
 
@@ -297,8 +298,8 @@ const MarketPrices = () => {
                             key={cat.key}
                             onClick={() => { setCategory(cat.key); setVisibleCount(INITIAL_SHOW); }}
                             className={`px-5 py-2.5 rounded-xl text-sm font-bold border transition-all ${category === cat.key
-                                    ? 'bg-primary/20 border-primary/40 text-primary'
-                                    : 'bg-white/5 border-white/10 text-text-secondary hover:text-white hover:border-white/20'
+                                ? 'bg-primary/20 border-primary/40 text-primary'
+                                : 'bg-white/5 border-white/10 text-text-secondary hover:text-white hover:border-white/20'
                                 }`}
                         >
                             {cat.label} <span className="ml-1.5 opacity-60">({catCounts[cat.key]})</span>
