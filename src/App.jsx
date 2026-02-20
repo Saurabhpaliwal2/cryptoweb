@@ -2,6 +2,10 @@ import React, { useEffect } from 'react';
 import { Navbar, Hero, Footer } from './components/Layout';
 import MarketPrices from './components/MarketPrices';
 import { Features, Testimonials, FAQ, CTA } from './components/Sections';
+import LiveMarketAnalysis from './components/LiveMarketAnalysis';
+import { AuthProvider } from './context/AuthContext';
+import { WalletProvider } from './context/WalletContext';
+import AuthModal from './components/AuthModal';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 
@@ -15,22 +19,30 @@ function App() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-background relative overflow-hidden">
-      {/* Mesh Gradients */}
-      <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary/10 rounded-full blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-secondary/10 rounded-full blur-[120px] pointer-events-none" />
+    <AuthProvider>
+      <WalletProvider>
+        <div className="min-h-screen bg-background relative overflow-hidden">
+          {/* Mesh Gradients */}
+          <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary/10 rounded-full blur-[120px] pointer-events-none" />
+          <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-secondary/10 rounded-full blur-[120px] pointer-events-none" />
 
-      <Navbar />
-      <main>
-        <Hero />
-        <MarketPrices />
-        <Features />
-        <Testimonials />
-        <FAQ />
-        <CTA />
-      </main>
-      <Footer />
-    </div>
+          <Navbar />
+          <main>
+            <Hero />
+            <MarketPrices />
+            <LiveMarketAnalysis />
+            <Features />
+            <Testimonials />
+            <FAQ />
+            <CTA />
+          </main>
+          <Footer />
+
+          {/* Auth Modal (global overlay) */}
+          <AuthModal />
+        </div>
+      </WalletProvider>
+    </AuthProvider>
   );
 }
 

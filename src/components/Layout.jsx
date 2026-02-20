@@ -1,10 +1,15 @@
 import React from 'react';
-import { Menu, X, Rocket, Zap, Shield, BarChart3, ChevronDown, Globe, Twitter, Github, Linkedin } from 'lucide-react';
+import { Menu, X, Rocket, Zap, Shield, BarChart3, ChevronDown, Globe, Twitter, Github, Linkedin, Wallet, LogIn, UserPlus, LogOut, UserCircle } from 'lucide-react';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
+import { useWallet } from '../context/WalletContext';
+import { useAuth } from '../context/AuthContext';
 
 const Navbar = () => {
     const [isOpen, setIsOpen] = React.useState(false);
+    const { usdBalance, holdings, formatBalance } = useWallet();
+    const { user, isLoggedIn, openAuth, logout } = useAuth();
+    const holdingCount = Object.values(holdings).filter(v => v > 0).length;
 
     return (
         <nav className="fixed top-0 left-0 right-0 z-50 bg-background/60 backdrop-blur-lg border-b border-white/5">
@@ -19,15 +24,51 @@ const Navbar = () => {
                         </span>
                     </div>
 
-                    <div className="hidden md:block">
-                        <div className="ml-10 flex items-baseline space-x-8">
+                    <div className="hidden md:flex items-center gap-4">
+                        <div className="flex items-baseline space-x-8">
                             <a href="#home" className="nav-link">Home</a>
                             <a href="#prices" className="nav-link">Market</a>
                             <a href="#features" className="nav-link">Features</a>
                             <a href="#testimonials" className="nav-link">Reviews</a>
                             <a href="#faq" className="nav-link">FAQ</a>
-                            <button className="btn-primary">Trade Now</button>
                         </div>
+
+                        {isLoggedIn ? (
+                            <>
+                                {/* Wallet HUD */}
+                                <div className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/5 border border-white/10">
+                                    <Wallet size={16} className="text-primary shrink-0" />
+                                    <div className="text-right text-xs leading-tight">
+                                        <div className="font-mono font-bold text-white">${formatBalance(usdBalance)}</div>
+                                        {holdingCount > 0 && (
+                                            <div className="text-text-secondary">{holdingCount} asset{holdingCount > 1 ? 's' : ''}</div>
+                                        )}
+                                    </div>
+                                </div>
+                                <a href="#prices">
+                                    <button className="btn-primary">Trade Now</button>
+                                </a>
+                                {/* User chip */}
+                                <div className="flex items-center gap-2 px-3 py-2 rounded-xl bg-white/5 border border-white/10">
+                                    <div className="w-7 h-7 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-xs font-bold text-white">
+                                        {user.name?.charAt(0).toUpperCase()}
+                                    </div>
+                                    <span className="text-xs font-medium max-w-[80px] truncate">{user.name}</span>
+                                </div>
+                                <button onClick={logout} className="p-2 rounded-lg bg-white/5 border border-white/10 hover:bg-red-500/20 hover:border-red-500/30 text-text-secondary hover:text-red-400 transition-all" title="Logout">
+                                    <LogOut size={16} />
+                                </button>
+                            </>
+                        ) : (
+                            <>
+                                <button onClick={() => openAuth('login')} className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-medium text-text-secondary hover:text-white bg-white/5 border border-white/10 hover:border-primary/30 transition-all">
+                                    <LogIn size={15} /> Log In
+                                </button>
+                                <button onClick={() => openAuth('signup')} className="btn-primary flex items-center gap-1.5">
+                                    <UserPlus size={15} /> Sign Up
+                                </button>
+                            </>
+                        )}
                     </div>
 
                     <div className="md:hidden">
@@ -47,8 +88,30 @@ const Navbar = () => {
                         <a href="#features" className="block px-3 py-2 nav-link" onClick={() => setIsOpen(false)}>Features</a>
                         <a href="#testimonials" className="block px-3 py-2 nav-link" onClick={() => setIsOpen(false)}>Reviews</a>
                         <a href="#faq" className="block px-3 py-2 nav-link" onClick={() => setIsOpen(false)}>FAQ</a>
-                        <div className="px-3 py-2">
-                            <button className="w-full btn-primary">Trade Now</button>
+                        <div className="px-3 py-2 space-y-2">
+                            {isLoggedIn ? (
+                                <>
+                                    <div className="flex items-center gap-2 px-3 py-2 rounded-xl bg-white/5 border border-white/10">
+                                        <div className="w-7 h-7 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-xs font-bold text-white">
+                                            {user.name?.charAt(0).toUpperCase()}
+                                        </div>
+                                        <span className="text-sm font-medium">{user.name}</span>
+                                        <span className="text-xs text-text-secondary ml-auto font-mono">${formatBalance(usdBalance)}</span>
+                                    </div>
+                                    <button onClick={() => { logout(); setIsOpen(false); }} className="w-full py-2 rounded-xl bg-red-500/10 text-red-400 border border-red-500/20 font-medium text-sm flex items-center justify-center gap-1.5">
+                                        <LogOut size={14} /> Logout
+                                    </button>
+                                </>
+                            ) : (
+                                <>
+                                    <button onClick={() => { openAuth('login'); setIsOpen(false); }} className="w-full py-2 rounded-xl bg-white/5 border border-white/10 text-sm font-medium flex items-center justify-center gap-1.5">
+                                        <LogIn size={14} /> Log In
+                                    </button>
+                                    <button onClick={() => { openAuth('signup'); setIsOpen(false); }} className="w-full btn-primary text-sm flex items-center justify-center gap-1.5">
+                                        <UserPlus size={14} /> Sign Up
+                                    </button>
+                                </>
+                            )}
                         </div>
                     </div>
                 </div>
@@ -85,34 +148,8 @@ const Hero = () => (
                 </div>
             </div>
 
-            {/* Decorative Elements */}
-            <div className="relative mt-20" data-aos="zoom-in" data-aos-delay="200">
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-primary/20 rounded-full blur-[120px] -z-10" />
-                <div className="glass-card p-4 md:p-8 aspect-video flex items-center justify-center">
-                    {/* Visual representation of a dashboard */}
-                    <div className="w-full h-full rounded-xl bg-background/80 border border-white/5 overflow-hidden flex flex-col">
-                        <div className="h-12 border-b border-white/5 flex items-center px-6 justify-between">
-                            <div className="flex gap-2">
-                                <div className="w-3 h-3 rounded-full bg-red-500/50" />
-                                <div className="w-3 h-3 rounded-full bg-yellow-500/50" />
-                                <div className="w-3 h-3 rounded-full bg-green-500/50" />
-                            </div>
-                        </div>
-                        <div className="flex-1 p-6 grid grid-cols-3 gap-6">
-                            <div className="col-span-2 space-y-4">
-                                <div className="h-40 bg-white/5 rounded-lg animate-pulse" />
-                                <div className="grid grid-cols-2 gap-4">
-                                    <div className="h-24 bg-white/5 rounded-lg animate-pulse" />
-                                    <div className="h-24 bg-white/5 rounded-lg animate-pulse" />
-                                </div>
-                            </div>
-                            <div className="space-y-4">
-                                <div className="h-full bg-white/5 rounded-lg animate-pulse" />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+
+
         </div>
     </section>
 );

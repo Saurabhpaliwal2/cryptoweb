@@ -37,7 +37,10 @@ export default {
       boxShadow: {
         'neon-primary': '0 0 10px rgba(0, 242, 254, 0.5), 0 0 20px rgba(0, 242, 254, 0.2)',
         'neon-secondary': '0 0 10px rgba(112, 0, 255, 0.5), 0 0 20px rgba(112, 0, 255, 0.2)',
+        'glass-hover': '0 0 30px rgba(0, 242, 254, 0.05)',
+        'neon-glow': '0 0 15px rgba(0, 242, 254, 0.3)',
       },
+
       backdropBlur: {
         xs: '2px',
       }
